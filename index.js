@@ -13,6 +13,10 @@ const app = express();
 app.use(express.json());
 app.use(cors(corsOptions));
 
+app.get('/', (req, res) => {
+  res.send('ok');
+})
+
 app.use('/solve', solveRoute)
 
 app.listen("81", (req, res) => {
