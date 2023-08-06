@@ -21,13 +21,15 @@ const { constructNFTransaction } = require('./transactions/nftTransactions');
 const { constructSendTransaction } = require("./transactions/tokenTransaction");
 const { constructSwapTransaction } = require('./transactions/swapTransaction')
 const { contructBridgeTransactionForStaking } = require('./transactions/bridgeAndStake')
+const { constructBridgeAndSwapTransaction } = require('./transactions/bridgeAndSwap')
 
 const transpiler = async (currentStep, classifier, userAddress, chain) => {
 
   console.log('this is chain ', chain)
   console.log('this is chain ', typeof chain)
   console.log('this is chain ', chain === 137)
-  const context = classifier.classify(currentStep);
+  const context = 'cross-chain'
+  // const context = classifier.classify(currentStep);
   console.log('step context ', context);
 
   // polygon mainnet and gnosis
@@ -153,6 +155,26 @@ const transpiler = async (currentStep, classifier, userAddress, chain) => {
     let bridgeTxnResp = await contructBridgeTransactionForStaking(bridgeTransactionData);
     console.log('txn ', bridgeTxnResp);
     return { ...bridgeTxnResp, type: 'bridge' };
+  } else if(context === 'cross-chain') {
+    const question = 'How much amount of matic token in the given statement user wants to use please answer in one word only and if it doesn\'t mentions the amount please return "-" as the answer';
+    // prompt: can you get me USDC on gnosis i have using 1 matic
+    let tokenAmount = await getResponse(question, currentStep);
+
+    if(tokenAmount === '-') {
+      return {
+        success: false,
+        transactions: []
+      }
+    }
+
+    const txnData = {
+      amount: tokenAmount,
+      userAddress
+    };
+
+    const resp = await constructBridgeAndSwapTransaction(txnData);
+    console.log('this is resp ', resp);
+    return resp;
   }
 };
 

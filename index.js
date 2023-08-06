@@ -4,7 +4,8 @@ const solveRoute = require('./routes/solveRoute')
 
 const corsOptions = {
     origin:
-     'https://intent-solver.netlify.app',
+    //  'https://intent-solver.netlify.app',
+    'https://solver.bananahq.io',
     credentials: true,
     optionSuccessStatus: 200,
   };
@@ -19,6 +20,6 @@ app.get('/', (req, res) => {
 
 app.use('/solve', solveRoute)
 
-app.listen("81", (req, res) => {
+app.listen("80", (req, res) => {
     console.log("Listening your req...");
 });
