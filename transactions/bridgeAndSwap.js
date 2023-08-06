@@ -55,7 +55,7 @@ const getGasFee = async () => {
     // Calculate how much gas to pay to Axelar to execute the transaction at the destination chain
     const gasFee = await api.estimateGasFee(
       EvmChain.POLYGON,
-      EvmChain.OPTIMISM,
+      EvmChain.CELO,
       GasToken.MATIC,
     );
 
@@ -72,7 +72,7 @@ const contructBridgeTransaction = async (bridgeData) => {
     const crossChainTransactionData = new ethers.utils.Interface(BananaAccount.abi).encodeFunctionData(
         'crossChainTransact',
         ['USDC',
-        'Optimism',
+        'celo',
         bridgeData.userAddress,
         ethers.utils.parseUnits(bridgeData.amount, 6),
         '0x']

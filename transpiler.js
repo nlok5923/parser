@@ -158,9 +158,24 @@ const transpiler = async (currentStep, classifier, userAddress, chain) => {
   } else if(context === 'cross-chain') {
     const question = 'How much amount of matic token in the given statement user wants to use please answer in one word only and if it doesn\'t mentions the amount please return "-" as the answer';
     // prompt: can you get me USDC on gnosis i have using 1 matic
-    let tokenAmount = await getResponse(question, currentStep);
+    let trials = 0;
+    let tokenAmount;
+  
+    function isValidNumber(input) {
+      return /^-?\d+(\.\d+)?$/.test(input);
+    }
+      
+    while(trials < 5) {
+      tokenAmount = await getResponse(question, currentStep);
 
-    if(tokenAmount === '-') {
+      if(isValidNumber(tokenAmount)) {
+        break;
+      } else {
+        trials++;
+      }
+    }
+
+    if(tokenAmount === '-' || !isValidNumber(tokenAmount)) {
       return {
         success: false,
         transactions: []

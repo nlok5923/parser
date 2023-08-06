@@ -5,7 +5,8 @@ const solveRoute = require('./routes/solveRoute')
 const corsOptions = {
     origin:
     //  'https://intent-solver.netlify.app',
-    'https://solver.bananahq.io',
+    // 'https://solver.bananahq.io',
+    "*",
     credentials: true,
     optionSuccessStatus: 200,
   };
