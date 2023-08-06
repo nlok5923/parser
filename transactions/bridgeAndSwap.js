@@ -143,7 +143,7 @@ const constructBridgeAndSwapTransaction = async (intentData) => {
             },
             {
                 type: 'bridge',
-                context: `Bridge ${tokenAmount} USDC token to Optimism using Axelar bridge`,
+                context: `Bridge ${tokenAmount} USDC token to Celo using Axelar bridge`,
                 estimatedTime: 120
             }
         ],
