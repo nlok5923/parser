@@ -9,16 +9,22 @@ const usdcTokenAddress = '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174'
 
 let swapProtocol = '';
 
-const approveUrl = (chain) => `https://api.1inch.io/v5.0/${chain}/approve/transaction`;
-const swapUrl = (chain) => `https://api.1inch.io/v5.0/${chain}/swap`;
+const approveUrl = (chain) => `https://api.1inch.dev/swap/v5.2/${chain}/approve/transaction`;
+const swapUrl = (chain) => `https://api.1inch.dev/swap/v5.2/${chain}/swap`;
 
 const constructNormalSwapTransaction = async (swapData) => {
     let transactions = [];
     console.log('this is data ', swapData)
     const chain = swapData.chain;
 
+    const headers = {
+        'accept': '*/*',
+        'Authorization': 'Bearer CaWrI5h7GTeIx4hRZo2e19R912ruITHg'
+    };
+
     // swap transction
     let swapTransactionResp = await Axios.get(swapUrl(chain), {
+      headers,
       params: {
         fromTokenAddress: swapData.tokenAddress1,
         toTokenAddress: swapData.tokenAddress2,
@@ -31,8 +37,10 @@ const constructNormalSwapTransaction = async (swapData) => {
         destReceiver: swapData.userAddress
       }
     });
-    console.log( swapTransactionResp.data.protocols[0]);
-    swapProtocol = swapTransactionResp.data.protocols[0][0][0].name.toLowerCase();
+    // console.log('tjis is resp ', swapTransactionResp.data)
+    // console.log( swapTransactionResp.data.protocols[0]);
+    swapProtocol = 'Quickswap';
+    // swapTransactionResp.data.protocols[0][0][0].name.toLowerCase();
     const swapTxn = {
       to: swapTransactionResp.data.tx.to,
       value: swapTransactionResp.data.tx.value,
@@ -133,12 +141,14 @@ const constructBridgeAndSwapTransaction = async (intentData) => {
 
     txns = [...txns, ...bridgeTxn.transaction];
 
+    // ${swapProtocol.slice(8).charAt(0).toUpperCase() + swapProtocol.slice(8).slice(1)}
     return {
+        success: true,
         context: 'timepass',
         steps: [
             {
                 type: 'swap',
-                context: `Swap ${amount} MATIC token with USDC token on ${swapProtocol.slice(8).charAt(0).toUpperCase() + swapProtocol.slice(8).slice(1)}`,
+                context: `Swap ${amount} MATIC token with USDC token on ${swapProtocol}`,
                 estimatedTime: 30
             },
             {
